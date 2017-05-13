@@ -2,6 +2,8 @@ CFLAGS = -Wall -fpic -coverage -lm -std=c99
 UNIT = unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4
 UNIT_C = unittest1.c unittest2.c unittest3.c unittest4.c cardtest1.c cardtest2.c cardtest3.c cardtest4.c
 UNIT_O = unittest1.o unittest2.o unittest3.o unittest4.o cardtest1.o cardtest2.o cardtest3.o cardtest4.o
+RAND = randtest1 randtest2 randadv
+RAND_C = randomtestcard1.c randomtestcard2.c randomtestadventurer.c
 
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
@@ -21,7 +23,7 @@ badTestDrawCard: badTestDrawCard.c dominion.o rngs.o
 testBuyCard: testDrawCard.c dominion.o rngs.o
 	gcc -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
 
-test: $(UNIT_C) dominion.o rngs.o
+test: $(UNIT_C) $(RAND_C) dominion.o rngs.o
 	gcc -o unittest1 -g unittest1.c dominion.o rngs.o $(CFLAGS)
 	gcc -o unittest2 -g unittest2.c dominion.o rngs.o $(CFLAGS)
 	gcc -o unittest3 -g unittest3.c dominion.o rngs.o $(CFLAGS)
@@ -30,6 +32,9 @@ test: $(UNIT_C) dominion.o rngs.o
 	gcc -o cardtest2 -g cardtest2.c dominion.o rngs.o $(CFLAGS)
 	gcc -o cardtest3 -g cardtest3.c dominion.o rngs.o $(CFLAGS)
 	gcc -o cardtest4 -g cardtest4.c dominion.o rngs.o $(CFLAGS)
+	gcc -o randtest1 -g randomtestcard1.c testFunctions.c dominion.o rngs.o $(CFLAGS)
+	gcc -o randtest2 -g randomtestcard2.c testFunctions.c dominion.o rngs.o $(CFLAGS)
+	gcc -o randtestadv -g randomtestadventurer.c testFunctions.c dominion.o rngs.o $(CFLAGS)
 
 unittestresults.out: $(UNIT_C) dominion.o rngs.o
 	rm -f unittestresults.out
@@ -79,4 +84,4 @@ player: player.c interface.o
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
 clean:
-	rm -f *.o playdom.exe playdom test.exe test player player.exe testInit testInit.exe *.gcov *.gcda *.gcno *.so $(UNIT)
+	rm -f *.o playdom.exe playdom test.exe test player player.exe testInit testInit.exe *.gcov *.gcda *.gcno *.so $(UNIT) $(RAND)

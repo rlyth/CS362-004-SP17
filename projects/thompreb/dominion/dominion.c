@@ -1338,7 +1338,7 @@ int playCutpurse(struct gameState *state, int handPos) {
 					discardCard(j, i, state, 1);
 					break;
 				}
-				if (j == state->handCount[k]) {
+				if (j == state->handCount[i]) {
 					for (k = 0; k < state->handCount[i]; k++) {
 						if (DEBUG)
 							printf("Player %d reveals card number %d\n", i, state->hand[i][k]);
