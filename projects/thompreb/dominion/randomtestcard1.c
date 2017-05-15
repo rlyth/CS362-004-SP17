@@ -9,6 +9,10 @@
 #define TESTCARD "cutpurse"
 #define NOISY_TEST 1
 
+
+void expectedChange(struct gameState *T);
+
+
 int main () {
 	struct gameState G, T;
 
@@ -17,13 +21,14 @@ int main () {
 	int failed = 0;
 	
 	int i;
-	for(i = 0; i < 100; i++) {
-		if(NOISY_TEST) {
-			printf("# Random Test #%i\n", i+1);
-		}
+	for(i = 0; i < 1000; i++) {
+		printf("# Random Test #%i\n", i+1);
 		
 		// Randomize gameState
-		randomState(&G, rand() % 50, -1, -1);
+		// Smaller handCount to increase chance of player not having copper
+		randomState(&G, rand() % 20, -1, -1);
+		
+		printf("State -- Players: %i Active Player: %i\n", G.numPlayers, G.whoseTurn);
 		
 		// Make a copy of new gameState
 		memcpy(&T, &G, sizeof(struct gameState));
@@ -31,48 +36,50 @@ int main () {
 		// Perform card action
 		playCutpurse(&G, 0);
 		
-		// Conditions for current player and gamestate
-		if(NOISY_TEST) {
-			printf("- coins increases by 2\n");
-		}
-		assertTest(T.coins + 2, G.coins);
+		expectedChange(&T);
 		
-		if(NOISY_TEST) {
-			printf("- Played cards increases by 1\n");
+		if(compareGameState(G, T)) {
+			printf("- All subtests passed\n");
 		}
-		assertTest(T.playedCardCount + 1, G.playedCardCount);
-		
-		if(NOISY_TEST) {
-			printf("- Current player hand decreases by 1\n");
+		else {
+			printf("- Some subtests failed\n");
+			failed++;
 		}
-		assertTest(T.handCount[T.whoseTurn] - 1, G.handCount[G.whoseTurn]);
-		
-		// Conditions for other players
-		int j;
-		for(j = 0; j < G.numPlayers; j++) {
-			if(j != G.whoseTurn) {
-				// If player had a copper
-				int initCopper = cardsIn(T.hand[j], T.handCount[j], copper);
-				if(initCopper > 0) {
-					printf("- Player %i one fewer card in hand\n", j);
-					assertTest(T.handCount[j] - 1, G.handCount[j]);
-					
-					printf("- Player %i lost a copper from hand\n", j);
-					assertTest(initCopper - 1, cardsIn(G.hand[j], G.handCount[j], copper));
-					
-					printf("- Player %i card was added to discard\n", j);
-					assertTest(T.discardCount[i] + 1, G.discardCount[i]);
-				}
-			}
-		}
+
 	}
 	
 	if(!failed) {
 		printf("\n[ All tests passed! ]\n");
 	}
 	else {
-		printf("\n[ %i tests failed. ]\n", failed);
+		printf("\n[ %i out of %i tests failed. ]\n", failed, i);
 	}
 	
 	return 0;
+}
+
+void expectedChange(struct gameState *T) {
+	int curPlayer = T->whoseTurn;
+	
+	T->coins += 2;
+	
+	// Played card removed from hand
+	T->handCount[curPlayer]--;
+	
+	T->playedCardCount++;
+	
+	int i;
+	for(i = 0; i < T->numPlayers; i++) {
+		// For all other players
+		if(i != curPlayer) {
+			// If they had a copper in hand
+			if(cardsIn(T->hand[i], T->handCount[i], copper)) {
+				// Lose a copper from hand
+				T->handCount[i]--;
+				
+				// Copper goes to discard pile
+				T->discardCount[i]++;
+			}
+		}
+	}
 }

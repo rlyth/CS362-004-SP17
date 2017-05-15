@@ -15,19 +15,23 @@ int main () {
 
 	printf("\n[ Testing card %s ]\n", TESTCARD);
 	
+	int failed = 0;
+	
 	int i;
-	for(i = 0; i < 100; i++) {
+	for(i = 0; i < 1000; i++) {
 		printf("# Random Test #%i\n", i+1);
 		
 		// Randomize gameState
 		// Hand is smaller to give higher chance of insufficient cards
-		randomState(&G, rand() % 100, -1, -1);
+		randomState(&G, rand() % 50, -1, -1);
+		
+		printf("State -- Players: %i Active Player: %i\n", G.numPlayers, G.whoseTurn);
 		
 		// Make a copy of new gameState
 		memcpy(&T, &G, sizeof(struct gameState));
 		
 		// Position of card in hand
-		int trashedPos = rand() % G.handCount[G.whoseTurn];
+		int trashedPos = Random() * G.handCount[G.whoseTurn];
 		// The type of card being trashed
 		int trashedCard = G.hand[G.whoseTurn][trashedPos];
 		// Number of cards to trash (-1 : 3)
@@ -44,6 +48,7 @@ int main () {
 			cardsIn(G.hand[G.whoseTurn], G.handCount[G.whoseTurn], trashedCard) < trashedNum) {
 			if(res >= 0) {
 				printf("FAILED: playAmbassador did not return -1\n");
+				failed++;
 			}
 			else {
 				//printf("SUCCESS: playAmbassador returned -1\n");
@@ -57,11 +62,18 @@ int main () {
 			}
 			else {
 				printf("- Some subtests failed\n");
+				failed++;
 			}
 		}
 		
 	}
-
+	
+	if(!failed) {
+		printf("\n[ All tests passed! ]\n");
+	}
+	else {
+		printf("\n[ %i out of %i tests failed. ]\n", failed, i);
+	}
 
 	return 0;
 }

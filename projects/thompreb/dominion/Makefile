@@ -2,7 +2,7 @@ CFLAGS = -Wall -fpic -coverage -lm -std=c99
 UNIT = unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4
 UNIT_C = unittest1.c unittest2.c unittest3.c unittest4.c cardtest1.c cardtest2.c cardtest3.c cardtest4.c
 UNIT_O = unittest1.o unittest2.o unittest3.o unittest4.o cardtest1.o cardtest2.o cardtest3.o cardtest4.o
-RAND = randtest1 randtest2 randadv
+RAND = randomtestcard1 randomtestcard2 randomtestadventurer
 RAND_C = randomtestcard1.c randomtestcard2.c randomtestadventurer.c
 
 rngs.o: rngs.h rngs.c
@@ -10,6 +10,9 @@ rngs.o: rngs.h rngs.c
 
 dominion.o: dominion.h dominion.c rngs.o
 	gcc -c dominion.c -g  $(CFLAGS)
+
+testFunctions.o: testFunctions.h testFunctions.c rngs.o dominion.o
+	gcc -c testFunctions.c -g $(CFLAGS)
 
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o rngs.o $(CFLAGS)
@@ -64,6 +67,30 @@ unittestresults.out: $(UNIT_C) dominion.o rngs.o
 	cardtest4 >> unittestresults.out
 	echo -e "\n########### Running GCOV on Dominion.c ###########\n" >> unittestresults.out
 	gcov -f -b dominion.o >> unittestresults.out
+
+randomtestcard1.out: randomtestcard1.c testFunctions.h testFunctions.o dominion.o rngs.o
+	rm -f randomtestcard1.out
+	gcc -o randomtestcard1 -g randomtestcard1.c testFunctions.o dominion.o rngs.o $(CFLAGS)
+	echo -e "########### Running randomtestcard1.c ###########" >> randomtestcard1.out
+	randomtestcard1 >> randomtestcard1.out
+	echo -e "\n########### Coverage ###########\n" >> randomtestcard1.out
+	gcov -f -b dominion.o >> randomtestcard1.out
+
+randomtestcard2.out: randomtestcard2.c testFunctions.h testFunctions.o dominion.o rngs.o
+	rm -f randomtestcard2.out
+	gcc -o randomtestcard2 -g randomtestcard2.c testFunctions.o dominion.o rngs.o $(CFLAGS)
+	echo -e "########### Running randomtestcard2.c ###########" >> randomtestcard2.out
+	randomtestcard2 >> randomtestcard2.out
+	echo -e "\n########### Coverage ###########\n" >> randomtestcard2.out
+	gcov -f -b dominion.o >> randomtestcard2.out
+
+randomtestadventurer.out: randomtestadventurer.c testFunctions.h testFunctions.o dominion.o rngs.o
+	rm -f randomtestadventurer.out
+	gcc -o randomtestadventurer -g randomtestadventurer.c testFunctions.o dominion.o rngs.o $(CFLAGS)
+	echo -e "########### Running randomtestadventurer.c ###########" >> randomtestadventurer.out
+	randomtestadventurer >> randomtestadventurer.out
+	echo -e "\n########### Coverage ###########\n" >> randomtestadventurer.out
+	gcov -f -b dominion.o >> randomtestadventurer.out
 
 
 testAll: dominion.o testSuite.c

@@ -15,6 +15,8 @@ int main () {
 
 	printf("\n[ Testing card %s ]\n", TESTCARD);
 	
+	int failed = 0;
+	
 	int i;
 	for(i = 0; i < 100; i++) {
 		printf("# Random Test #%i\n", i+1);
@@ -22,6 +24,11 @@ int main () {
 		// Randomize gameState
 		// Deck and discard are smaller to give higher chance of 0 and 1 treasure piles
 		randomState(&G, -1, rand() % 10, rand() % 10);
+		
+		// adding in a guaranteed treasure to prevent segfault
+		G.discard[G.whoseTurn][G.discardCount[G.whoseTurn]++] = copper;
+		
+		printf("State -- Players: %i Active Player: %i\n", G.numPlayers, G.whoseTurn);
 		
 		// Make a copy of new gameState
 		memcpy(&T, &G, sizeof(struct gameState));
@@ -36,8 +43,16 @@ int main () {
 		}
 		else {
 			printf("- Some subtests failed\n");
+			failed++;
 		}
 		
+	}
+	
+	if(!failed) {
+		printf("\n[ All tests passed! ]\n");
+	}
+	else {
+		printf("\n[ %i out of %i tests failed. ]\n", failed, i);
 	}
 
 

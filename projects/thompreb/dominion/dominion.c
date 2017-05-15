@@ -1333,11 +1333,14 @@ int playCutpurse(struct gameState *state, int handPos) {
 	updateCoins(currentPlayer, state, 4);
     for (i = 0; i < state->numPlayers; i++) {
 		if (i != currentPlayer) {
+			// For all the cards in player i's hand
 			for (j = 0; j < state->handCount[i]; j++) {
+				// If that card is a copper, discard it and exit loop
 				if (state->hand[i][j] == copper) {
 					discardCard(j, i, state, 1);
 					break;
 				}
+				// Due to loop conditions, loop will exit before j == state->handCount[i]
 				if (j == state->handCount[i]) {
 					for (k = 0; k < state->handCount[i]; k++) {
 						if (DEBUG)

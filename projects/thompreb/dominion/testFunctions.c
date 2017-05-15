@@ -75,33 +75,6 @@ void randomState(struct gameState *G, int hand, int deck, int discard) {
 }
 
 
-void randomCards(struct gameState *G, int player, int hand, int deck, int discard) {
-	int i;
-	int k[27] = {curse, estate, duchy, province, copper, silver, gold, adventurer, council_room,
-		feast, gardens, mine, remodel, smithy, village, baron, great_hall, minion, steward, 
-		tribute, ambassador, cutpurse, embargo, outpost, salvager, sea_hag, treasure_map};
-	
-	
-	// Fill hand with specified number of random cards
-	for (i = 0; i < hand; i++) {
-		//printf("!! hand %i\n", i);
-		G->hand[player][G->handCount[player]++] = k[rand() % 27];
-	}
-	
-	// Fill deck with specified number of random cards
-	for (i = 0; i < deck; i++) {
-		//printf("!! deck %i\n", i);
-		G->deck[player][G->deckCount[player]++] = k[rand() % 27];
-	}
-	
-	// Fill discard with specified number of random cards
-	for (i = 0; i < discard; i++) {
-		//printf("!! discard %i\n", k[rand() % 27]);
-		G->discard[player][G->discardCount[player]++] = k[rand() % 27];
-	}
-}
-
-
 int compareGameState(struct gameState obs, struct gameState exp) {
 	int passed = 1;
 	
