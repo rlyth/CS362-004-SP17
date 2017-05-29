@@ -25,18 +25,8 @@ int main () {
 		// Deck and discard are smaller to give higher chance of 0 and 1 treasure piles
 		randomState(&G, -1, rand() % 10, rand() % 10);
 		
-		// randomly place an adventurer card in current player's hand
-		int handPos;
-		if(G.handCount[G.whoseTurn] == 0) {
-			handPos = 0;
-		}
-		else {
-			handPos = rand() % G.handCount[G.whoseTurn];
-		}
-		G.hand[G.whoseTurn][handPos] = adventurer;
-		
 		// adding in a guaranteed treasure to prevent segfault
-		//G.discard[G.whoseTurn][G.discardCount[G.whoseTurn]++] = copper;
+		G.discard[G.whoseTurn][G.discardCount[G.whoseTurn]++] = copper;
 		
 		printf("State -- Players: %i Active Player: %i\n", G.numPlayers, G.whoseTurn);
 		
@@ -44,7 +34,8 @@ int main () {
 		memcpy(&T, &G, sizeof(struct gameState));
 		
 		// Perform card action
-		cardEffect(adventurer, 0, 0, 0, &G, handPos, 0);
+		//playAdventurer(&G);
+		cardEffect(adventurer, 0, 0, 0, &G, 0, 0);
 		
 		expectedChange(&T);
 		

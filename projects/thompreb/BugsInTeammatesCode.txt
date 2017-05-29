@@ -1,0 +1,125 @@
+ID: scoreFor.01
+Description
+----------------------------------------------------------
+scoreFor reporting incorrect score when only deck has Victory Points
+
+Steps
+----------------------------------------------------------
+Run scoreFor on a gameState where the player being scored has Victory Point cards in their deck only.
+
+Expected Results
+----------------------------------------------------------
+ +1 per Estate card, +3 per Duchy card, +6 per Province card in deck
+
+Actual Results: 0 points regardless of cards in deck
+
+
+ID: smithy.01
+Description
+----------------------------------------------------------
+playedCardCount variable not incrementing for cardEffectSmithy
+
+Steps
+----------------------------------------------------------
+Run the cardEffectSmithy function on a valid gameState
+
+Expected Results
+----------------------------------------------------------
+playedCardCount should equal 1
+
+Actual Results
+----------------------------------------------------------
+playedCardCount was 0
+
+
+ID: adventurer.01
+Description
+----------------------------------------------------------
+playedCardCount variable not incrementing for cardEffectAdventurer
+
+Steps
+----------------------------------------------------------
+Run the cardEffectAdventurer function on a valid gameState.
+
+Expected Results
+----------------------------------------------------------
+playedCardCount should equal 1
+
+Actual Results
+----------------------------------------------------------
+playedCardCount was 0
+
+
+ID: adventurer.02
+Description
+----------------------------------------------------------
+Current player’s handCount higher and deck+discard counts lower than expected
+
+Steps
+----------------------------------------------------------
+Run the cardEffectAdventurer function on a given gameState where the currentPlayer has at least two treasure cards between their deck and discard piles.
+
+Expected Results
+----------------------------------------------------------
+Player’s handCount should increase by 1 from its original state (two cards gained, one card discarded).
+Player’s discard+deck count should decrease by 1 from its original state (two cards drawn, one card discarded).
+
+Actual Results
+----------------------------------------------------------
+Current player’s handCount was one higher than expected, and discard+deck count was one lower than expected.
+
+
+ID: adventurer.03
+Description
+----------------------------------------------------------
+gameState altered in unexpected ways when current player has no treasure in deck or discard
+
+Steps
+----------------------------------------------------------
+Run the cardEffectAdventurer function on a gameState where the current player does not have any copper, silver, or gold in either their discard or deck piles.
+
+Expected Results
+----------------------------------------------------------
+Unclear what the intended behavior here should be. My assumption is that the player should simply discard the played adventurer card and not gain any additional cards. In this case, handCount should decrease by 1 and discardCount should increase by 1.
+
+Actual Results
+----------------------------------------------------------
+Current player’s handCount was set to an invalid/incorrect value (-34 was one such observed value).
+
+
+ID: ambassador.01
+Description
+----------------------------------------------------------
+Unexpected card counts for currentPlayer when not discarding any cards
+
+Steps
+----------------------------------------------------------
+Run cardEffectAmbassador on a gameState, with the parameter choice2 set to 0.
+The gameState used had 3 players, with the current player having 5 village cards in hand and deck.
+
+Expected Results
+----------------------------------------------------------
+Current player’s total cards between all piles should not change (no cards gained or trashed).
+
+Actual Results
+----------------------------------------------------------
+Current player’s total cards between all piles increased by 1.
+
+
+ID: ambassador.02
+Description
+----------------------------------------------------------
+Revealed card supplyCount is not set to the proper value
+
+Steps
+----------------------------------------------------------
+Run cardEffectAmbassador on a gameState with the parameter choice2 set to 0 and the supplyCount for the revealed card set to 5.
+The gameState used had 3 players.
+
+Expected Results
+----------------------------------------------------------
+supplyCount for the revealed card should decrease by 2 (one drawn each by the non-current players).
+
+Actual Results
+----------------------------------------------------------
+supplyCount for the revealed card decreased by 3.
